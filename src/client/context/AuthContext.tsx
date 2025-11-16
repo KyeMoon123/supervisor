@@ -1,0 +1,60 @@
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
+import { createAuthClient } from "better-auth/react";
+import { useRouter } from "next/navigation";
+const { useSession, signIn } = createAuthClient();
+
+type Session = Awaited<ReturnType<typeof useSession>>["data"];
+type AuthContextType = {
+  session: Session | null;
+  user: NonNullable<Session>["user"] | null;
+  isPending: boolean;
+  error: Error | null;
+  refetch: () => Promise<Session | null>;
+  signOut: () => Promise<void>;
+};
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const { data, isPending, error, refetch, signOut } = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if ((!isPending && !data) || error) {
+      router.push("/login");
+    }
+  }, [isPending, data, error]);
+
+  return (
+    <AuthContext.Provider
+      value={{
+        session: data ?? null,
+        user: data?.user ?? null,
+        isPending,
+        error,
+        refetch: async () => {
+          await refetch();
+          return data ?? null;
+        },
+        signOut: async () => {
+          await signOut();
+        },
+      }}
+    >
+      {isPending ? <div>Loading...</div> : children}
+    </AuthContext.Provider>
+  );
+};
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+}
