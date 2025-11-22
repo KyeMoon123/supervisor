@@ -29,7 +29,11 @@
     "paths": {
       "@/*": ["./src/*"],
       "@/components/*": ["./src/client/components/*"],
-      "@/primatives/*": ["./src/client/primatives/*"]
+      "@/hooks/*": ["./src/client/hooks/*"],
+      "@/primatives/*": ["./src/client/primatives/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/server/*": ["./src/server/*"],
+      "@/db/*": ["./src/server/db/*"]
     }
   },
   "include": [

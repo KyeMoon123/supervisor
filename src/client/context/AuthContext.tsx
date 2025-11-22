@@ -16,13 +16,12 @@ type AuthContextType = {
   isPending: boolean;
   error: Error | null;
   refetch: () => Promise<Session | null>;
-  signOut: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const { data, isPending, error, refetch, signOut } = useSession();
+  const { data, isPending, error, refetch } = useSession();
   const router = useRouter();
   useEffect(() => {
     if ((!isPending && !data) || error) {
@@ -41,12 +40,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           await refetch();
           return data ?? null;
         },
-        signOut: async () => {
-          await signOut();
-        },
       }}
     >
-      {isPending ? <div>Loading...</div> : children}
+      {children}
     </AuthContext.Provider>
   );
 };

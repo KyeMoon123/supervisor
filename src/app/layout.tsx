@@ -1,10 +1,13 @@
 import "@/styles/globals.css";
+import "@/styles/_variables.scss";
+import "@/styles/_keyframe-animations.scss";
 import { ThemeProvider } from "next-themes";
 
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -21,13 +24,14 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable}`}>
-      <body className="m-0">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <html lang="en" className={`${geist.variable}`} suppressHydrationWarning>
+      <body className="m-0" suppressHydrationWarning>
+        <ThemeProvider attribute="class" defaultTheme="light">
           <TRPCReactProvider>
-            <div className="flex flex-col h-screen w-full box-border bg-primary-foreground text-primary">
+            <div className="flex flex-col h-screen w-full box-border  ">
               {children}
             </div>
+            <Toaster richColors />
           </TRPCReactProvider>
         </ThemeProvider>
       </body>

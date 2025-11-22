@@ -1,8 +1,8 @@
 "use client";
+
 import SideBar from "@/client/components/Navigation/SideBar/SideBar";
-import SidebarDialog from "@/client/components/Navigation/SidebarDialog/SidebarDialog";
-import StickyTopMobileSideBar from "@/client/components/Navigation/StickyTopMobileSideBar/StickyTopMobileSideBar";
 import { AuthProvider } from "@/client/context/AuthContext";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 export default function AuthenticatedLayout({
@@ -10,26 +10,27 @@ export default function AuthenticatedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
+
   return (
-    <div className="flex flex-col min-h-screen w-full bg-primary-foreground text-primary box-border">
-      <AuthProvider>
-        <StickyTopMobileSideBar setOpen={setSidebarOpen} />
-        <SidebarDialog
-          sidebarOpen={sidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-        />
-        <div
-          className={`hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:flex-col w-72`}
-        >
+    <AuthProvider>
+      {/* Full-page background */}
+      <div className="relative w-full h-screen overflow-hidden bg-sidebar">
+        {/* SIDEBAR overlay (not boxed) */}
+        <aside className="fixed left-0 top-0 h-full w-72  z-20 bg-sidebar">
           <SideBar />
-        </div>
-        <div className={"lg:ml-72 flex-grow flex flex-col"}>
-          <div className="p-8 flex flex-col min-h-screen bg-primary-foreground">
-            {children}
-          </div>
-        </div>
-      </AuthProvider>
-    </div>
+        </aside>
+
+        {/* TOP BAR overlay */}
+        <header className="fixed left-72 right-0 top-0 h-12  z-10 flex items-center px-4 bg-sidebar">
+          {/* Top bar content */}
+        </header>
+
+        {/* PAGE CONTENT positioned under overlays */}
+        <main className="absolute left-72 top-12 right-0 bottom-0 overflow-y-auto p-4 z-0 bg-background rounded-xl mr-1 mb-1 shadow-xl">
+          {children}
+        </main>
+      </div>
+    </AuthProvider>
   );
 }

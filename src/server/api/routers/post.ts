@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { cases } from "@/server/db/schema/cases";
+import { folders } from "@/server/db/schema/folder";
 
 export const postRouter = createTRPCRouter({
   hello: publicProcedure
@@ -15,14 +15,15 @@ export const postRouter = createTRPCRouter({
   create: publicProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(cases).values({
+      await ctx.db.insert(folders).values({
         name: input.name,
+        workspaceId: "1",
       });
     }),
 
   getLatest: publicProcedure.query(async ({ ctx }) => {
-    const post = await ctx.db.query.cases.findFirst({
-      orderBy: (cases, { desc }) => [desc(cases.createdAt)],
+    const post = await ctx.db.query.folders.findFirst({
+      orderBy: (projects, { desc }) => [desc(projects.createdAt)],
     });
 
     return post ?? null;

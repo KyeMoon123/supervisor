@@ -1,4 +1,7 @@
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, uuid } from "drizzle-orm/pg-core";
+import { workspaces } from "./workspaces";
+import { relations } from "drizzle-orm";
+
 // DO NOT TOUCH THIS FILE
 
 export const user = pgTable("user", {
@@ -6,13 +9,22 @@ export const user = pgTable("user", {
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
+  // To avoid circular dependency, do NOT reference workspaces.id here.
+  workspaceId: uuid("workspace_id"),
   image: text("image"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
-    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .$onUpdate((): Date => /* @__PURE__ */ new Date())
     .notNull(),
 });
+
+export const userRelations = relations(user, ({ one }) => ({
+  workspace: one(workspaces, {
+    fields: [user.workspaceId],
+    references: [workspaces.id],
+  }),
+}));
 
 export const session = pgTable("session", {
   id: text("id").primaryKey(),
@@ -20,7 +32,7 @@ export const session = pgTable("session", {
   token: text("token").notNull().unique(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
-    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .$onUpdate((): Date => /* @__PURE__ */ new Date())
     .notNull(),
   ipAddress: text("ip_address"),
   userAgent: text("user_agent"),
@@ -45,7 +57,7 @@ export const account = pgTable("account", {
   password: text("password"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
-    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .$onUpdate((): Date => /* @__PURE__ */ new Date())
     .notNull(),
 });
 
@@ -57,6 +69,6 @@ export const verification = pgTable("verification", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
-    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .$onUpdate((): Date => /* @__PURE__ */ new Date())
     .notNull(),
 });

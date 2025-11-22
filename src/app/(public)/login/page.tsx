@@ -17,7 +17,7 @@ import {
 } from "@/client/primatives/tabs";
 import { Label } from "@/client/primatives/label";
 import { authClient } from "@/lib/auth-client"; //import the auth client
-
+import { useRouter } from "next/navigation";
 export default function LoginPage() {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -27,11 +27,14 @@ export default function LoginPage() {
   const [signupLoading, setSignupLoading] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [signupError, setSignupError] = useState<string | null>(null);
-
+  const router = useRouter();
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setSignupLoading(true);
     setSignupError(null);
+
+
+    
     const { data, error } = await authClient.signUp.email(
       {
         email: signupEmail,
@@ -48,6 +51,7 @@ export default function LoginPage() {
           //redirect to the dashboard or sign in page
           console.log(ctx);
           console.log("success");
+          router.push("/dashboard");
         },
         onError: (ctx) => {
           // display the error message

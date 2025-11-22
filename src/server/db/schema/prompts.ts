@@ -3,7 +3,7 @@ import { relations } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import { workspaces } from "./workspaces";
 import { user } from "./auth-schema";
-import { projects } from "./projects";
+import { folders } from "./folder";
 
 export const prompts = pgTable(
   "prompts",
@@ -14,9 +14,9 @@ export const prompts = pgTable(
     workspaceId: uuid("workspace_id")
       .notNull()
       .references(() => workspaces.id, { onDelete: "cascade" }),
-    projectId: uuid("project_id")
-      .notNull()
-      .references(() => projects.id, { onDelete: "set null" }),
+    folderId: uuid("folder_id").references(() => folders.id, {
+      onDelete: "cascade",
+    }),
     name: text("name").notNull(),
     key: text("key").notNull(),
     description: text("description"),
@@ -43,9 +43,9 @@ export const promptsRelations = relations(prompts, ({ one }) => ({
     fields: [prompts.workspaceId],
     references: [workspaces.id],
   }),
-  project: one(projects, {
-    fields: [prompts.projectId],
-    references: [projects.id],
+  folder: one(folders, {
+    fields: [prompts.folderId],
+    references: [folders.id],
   }),
   creator: one(user, {
     fields: [prompts.createdBy],

@@ -1,71 +1,49 @@
-import {
-  adminMenuItems,
-  sideBarMenuItems,
-} from "@/components/Navigation/Navigation";
-import { Separator } from "@/primatives/separator";
 // import Logo from "@/assets/Logo.png";
 import { useAuth } from "@/client/context/AuthContext";
-import { LogOutIcon, SettingsIcon } from "lucide-react";
-import { SideBarPrimaryMenuItem } from "./SideBarPrimaryMenuItem";
+import { Button } from "@/client/primatives/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/client/primatives/dropdown-menu";
+import { ChevronDown, FileText } from "lucide-react";
+import SideBarItem from "../../Sidebar/SideBarItem";
 
 interface SideBarProps {
   disabled?: boolean;
 }
 export default function SideBar({ disabled }: SideBarProps) {
-  const { signOut } = useAuth();
-
   return (
-    <div className="flex  shadow grow flex-col gap-y-5 overflow-y-auto px-6 pb-2 border-r border-border">
-      <div className="flex space-x-4 pt-4">
-        {/* <img className="h-8  mt-1" src={Logo.src} alt="Your Company" /> */}
+    <aside className="w-72  flex flex-col">
+      <div className="p-4  ">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="justify-between text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            >
+              <span className="font-semibold">Personal</span>
+              <ChevronDown className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-56">
+            {[{ id: "1", name: "Workspace 1" }].map((workspace) => (
+              <DropdownMenuItem key={workspace.id}>
+                {workspace.name}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
-      <Separator />
-      <nav
-        className={`flex flex-1 flex-col ${
-          disabled ? "opacity-30 pointer-events-none" : ""
-        }`}
-      >
-        <ul role="list" className="flex flex-1 flex-col gap-y-7">
-          <li>
-            <ul role="list" className="-mx-2 space-y-6">
-              {sideBarMenuItems.map((item) => (
-                <SideBarPrimaryMenuItem key={item.label} item={item} />
-              ))}
-            </ul>
-            <>
-              <Separator className={"my-2"} />
-              <ul role="list" className="-mx-2 space-y-6">
-                {adminMenuItems.map((item) => (
-                  <SideBarPrimaryMenuItem key={item.label} item={item} />
-                ))}
-              </ul>
-            </>
-          </li>
-        </ul>
-        <ul className={"mb-4 -mx-2"}>
-          <SideBarPrimaryMenuItem
-            key={"settings"}
-            item={{
-              label: "Settings",
-              route: "/settings",
-              icon: SettingsIcon,
-            }}
-          />
-          <button
-            className={
-              "flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold hover:text-accent  transition-colors"
-            }
-            onClick={() => signOut()}
-          >
-            <LogOutIcon
-              className={"h-6 w-6 shrink-0 group-hover:text-accent"}
-              aria-hidden="true"
-            />
-            Logout
-          </button>
-        </ul>
+      <nav className="flex-1 p-4 overflow-y-auto">
+        <SideBarItem
+          href="/home"
+          icon={<FileText className="w-4 h-4" />}
+          label="Home"
+        />
       </nav>
-    </div>
+    </aside>
   );
 }
