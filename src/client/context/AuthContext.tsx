@@ -1,18 +1,16 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  type ReactNode,
-} from "react";
 import { createAuthClient } from "better-auth/react";
 import { useRouter } from "next/navigation";
+import { createContext, useContext, useEffect, type ReactNode } from "react";
 const { useSession, signIn } = createAuthClient();
+
+type UserWithWorkspace = NonNullable<Session>["user"] & {
+  workspaceId: string;
+};
 
 type Session = Awaited<ReturnType<typeof useSession>>["data"];
 type AuthContextType = {
   session: Session | null;
-  user: NonNullable<Session>["user"] | null;
+  user: UserWithWorkspace | null;
   isPending: boolean;
   error: Error | null;
   refetch: () => Promise<Session | null>;
@@ -33,7 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         session: data ?? null,
-        user: data?.user ?? null,
+        user: data?.user as UserWithWorkspace | null,
         isPending,
         error,
         refetch: async () => {

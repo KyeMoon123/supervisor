@@ -4,9 +4,8 @@ import HomeActionsAndFilters from "@/client/components/Home/HomeActionsAndFilter
 import FoldersGrid from "@/client/components/Folders/FoldersGrid";
 import PromptsGrid from "@/client/components/Prompt/PromptsGrid";
 import { Separator } from "@/client/primatives/separator";
-import BlocksGrid from "@/client/components/Blocks/BlockGrid";
 
-export default function HomePage() {
+export default function LibraryPage() {
   const { session, isPending, error, refetch } = useAuth();
   return (
     <div className="flex flex-col gap-4">
@@ -17,18 +16,11 @@ export default function HomePage() {
         <HomeActionsAndFilters />
       </div>
       <div className="flex ">
-        <h2>Folders</h2>
         <FoldersGrid />
       </div>
       <Separator />
       <div className="flex ">
-        <h2>Prompts</h2>
         <PromptsGrid />
-      </div>
-      <Separator />
-      <div className="flex ">
-        <h2>Blocks</h2>
-        <BlocksGrid />
       </div>
     </div>
   );

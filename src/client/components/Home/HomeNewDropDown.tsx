@@ -6,19 +6,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/primatives/dropdown-menu";
-import { FileTextIcon, FolderIcon, PlusIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
+import { FileTextIcon, FolderIcon, Moon, PlusIcon, Sun } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface HomeNewDropDownProps {
   setNewFolderDialogOpen: (open: boolean) => void;
+  setNewPromptDrawerOpen: (open: boolean) => void;
 }
 export function HomeNewDropDown({
   setNewFolderDialogOpen,
 }: HomeNewDropDownProps) {
   const router = useRouter();
   const createPromptMutation = api.prompt.createPrompt.useMutation();
+  const createBlockMutation = api.blocks.createBlock.useMutation();
 
   return (
     <DropdownMenu>
@@ -48,8 +50,22 @@ export function HomeNewDropDown({
                   router.push(`/prompts/${data?.id}`);
                 },
                 onError: (error) => {
-                  toast.error("Failed to create prompt");
-                  console.error(error);
+                  toast.error(error.message);
+                },
+              });
+            }}
+          />
+          <NewActionItem
+            label="Block"
+            icon={<FileTextIcon />}
+            description="Reusable content blocks"
+            onClick={() => {
+              createBlockMutation.mutate(undefined, {
+                onSuccess: (data) => {
+                  router.push(`/blocks/${data?.id}`);
+                },
+                onError: (error) => {
+                  toast.error(error.message);
                 },
               });
             }}

@@ -1,7 +1,7 @@
 "use client";
 
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
-import { useContext } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 
 // --- Tiptap Core Extensions ---
 import { Typography } from "@tiptap/extension-typography";
@@ -27,15 +27,15 @@ import { SlashDropdownMenu } from "@/client/components/tiptap/tiptap-ui/slash-dr
 
 // --- Styles ---
 import "@/components/tiptap/notion-like-editor.scss";
-
+import { useDebounce } from "@uidotdev/usehooks";
+import { api } from "@/trpc/react";
 // --- Content ---
-
-export interface PromptEditorProps {
-  placeholder?: string;
-}
 
 export interface EditorProviderProps {
   placeholder?: string;
+  initialContent?: string;
+  children: React.ReactNode;
+  handleUpdate: (content: unknown) => void;
 }
 
 /**
@@ -65,8 +65,14 @@ export function EditorContentArea() {
 /**
  * Component that creates and provides the editor instance
  */
-export function EditorProvider(props: EditorProviderProps) {
-  const { placeholder = "Start writing..." } = props;
+export function EditorProvider({
+  placeholder,
+  initialContent,
+  children,
+  handleUpdate,
+}: EditorProviderProps) {
+  const lastSavedContentRef = useRef<string | undefined>(undefined);
+  const hasUserEditedRef = useRef(false);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -98,25 +104,52 @@ export function EditorProvider(props: EditorProviderProps) {
     ],
   });
 
-  console.log(editor?.getJSON());
-  console.log(editor?.getHTML());
-  // console.log(editor?.getText());
-  console.log(editor?.getMarkdown());
+  // Set initial content on mount
+  useEffect(() => {
+    if (initialContent && editor) {
+      try {
+        const parsed = JSON.parse(initialContent);
+        editor.commands.setContent(parsed);
+      } catch {
+        editor.commands.setContent(initialContent);
+      }
+      lastSavedContentRef.current = JSON.stringify(editor?.getJSON());
+      hasUserEditedRef.current = false;
+    }
+  }, [initialContent, editor]);
+
+  // Listen for user edits
+  useEffect(() => {
+    if (!editor) return;
+    const handler = () => {
+      hasUserEditedRef.current = true;
+    };
+    editor.on("update", handler);
+    return () => {
+      editor.off("update", handler);
+    };
+  }, [editor]);
+
+  // Debounced autosave
+  const debouncedEditorContent = useDebounce(editor?.getJSON(), 1000);
+
+  useEffect(() => {
+    if (!debouncedEditorContent) return;
+    if (!hasUserEditedRef.current) return;
+
+    const serialized = JSON.stringify(debouncedEditorContent);
+    if (serialized === lastSavedContentRef.current) return;
+
+    // Only autosave if content has actually changed and user has edited
+    handleUpdate(serialized);
+    lastSavedContentRef.current = serialized;
+  }, [debouncedEditorContent, handleUpdate]);
 
   return (
     <div className="notion-like-editor-wrapper">
       <EditorContext.Provider value={{ editor }}>
-        <EditorContentArea />
+        {children}
       </EditorContext.Provider>
     </div>
   );
-}
-
-/**
- * Prompt editor with all necessary providers, ready to use with just a placeholder
- */
-export function PromptEditor({
-  placeholder = "Start writing...",
-}: PromptEditorProps) {
-  return <EditorProvider placeholder={placeholder} />;
 }

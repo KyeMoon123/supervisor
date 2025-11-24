@@ -30,6 +30,7 @@
       "@/*": ["./src/*"],
       "@/components/*": ["./src/client/components/*"],
       "@/hooks/*": ["./src/client/hooks/*"],
+      "@/styles/*": ["./src/client/styles/*"],
       "@/primatives/*": ["./src/client/primatives/*"],
       "@/shared/*": ["./src/shared/*"],
       "@/server/*": ["./src/server/*"],

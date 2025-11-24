@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geist.variable}`} suppressHydrationWarning>
       <body className="m-0" suppressHydrationWarning>
-        <ThemeProvider attribute="class" defaultTheme="light">
+        <ThemeProvider attribute="class" defaultTheme="dark">
           <TRPCReactProvider>
             <div className="flex flex-col h-screen w-full box-border  ">
               {children}

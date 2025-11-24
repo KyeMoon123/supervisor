@@ -1,7 +1,7 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { FolderService } from "../services/folder";
+import { FolderService } from "../../services/folder";
 import { z } from "zod";
-import { FolderRepository } from "../repository/folder";
+import { FolderRepository } from "../../repository/folder";
 
 export const folderRouter = createTRPCRouter({
   /**

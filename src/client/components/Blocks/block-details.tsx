@@ -1,27 +1,28 @@
 "use client";
 
 import { Card, CardContent } from "@/client/primatives/card";
-import type { PromptDetailsDto } from "@/server/api/routers/prompt";
 import {
   EditorContentArea,
   EditorProvider,
 } from "../tiptap/notion-like-editor";
 import { api } from "@/trpc/react";
-interface PromptDetailProps {
-  promptDetails: PromptDetailsDto;
+import type { BlockDetailsDto } from "@/server/api/routers/blocks";
+
+interface BlockDetailProps {
+  blockDetails: BlockDetailsDto;
 }
 
-export function PromptDetail({ promptDetails }: PromptDetailProps) {
-  const updatePromptMutation = api.prompt.updatePromptBody.useMutation();
+export function BlockDetail({ blockDetails }: BlockDetailProps) {
+  const updateBlockMutation = api.blocks.updateBlockBody.useMutation();
   return (
     <EditorProvider
       placeholder="Start writing..."
       initialContent={
-        promptDetails.body ? JSON.stringify(promptDetails.body) : ""
+        blockDetails.body ? JSON.stringify(blockDetails.body) : ""
       }
       handleUpdate={(content) => {
-        updatePromptMutation.mutate({
-          id: promptDetails.id,
+        updateBlockMutation.mutate({
+          id: blockDetails.id,
           body: content,
         });
       }}
@@ -30,10 +31,10 @@ export function PromptDetail({ promptDetails }: PromptDetailProps) {
         <div className="flex items-start justify-between mb-6">
           <div>
             <h2 className="text-2xl font-semibold text-foreground">
-              {promptDetails.title}
+              {blockDetails.title}
             </h2>
             <p className="text-sm text-muted-foreground mt-1">
-              {promptDetails.description || "No description"}
+              {blockDetails.description || "No description"}
             </p>
           </div>
         </div>

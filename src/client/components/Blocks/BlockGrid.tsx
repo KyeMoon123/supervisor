@@ -9,9 +9,9 @@ import {
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
-export default function PromptsGrid() {
+export default function BlocksGrid() {
   const router = useRouter();
-  const { data: prompts, isLoading } = api.prompt.getPrompts.useQuery();
+  const { data: blocks, isLoading } = api.blocks.getBlocks.useQuery();
 
   if (isLoading) {
     return (
@@ -19,25 +19,25 @@ export default function PromptsGrid() {
     );
   }
 
-  if (!prompts || prompts.length === 0) {
+  if (!blocks || blocks.length === 0) {
     return (
-      <div className="py-8 text-center text-gray-400">No prompts found.</div>
+      <div className="py-8 text-center text-gray-400">No blocks found.</div>
     );
   }
 
   return (
     <div className="w-full grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 gap-6 px-6 py-8">
-      {prompts.map((prompt) => (
-        <Card key={prompt.id}>
+      {blocks.map((block) => (
+        <Card key={block.id}>
           <CardHeader>
-            <CardTitle>{prompt.title || "Untitled Prompt"}</CardTitle>
+            <CardTitle>{block.title || "Untitled Block"}</CardTitle>
           </CardHeader>
 
           <CardFooter>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => router.push(`/prompts/${prompt.id}`)}
+              onClick={() => router.push(`/blocks/${block.id}`)}
             >
               View
             </Button>
