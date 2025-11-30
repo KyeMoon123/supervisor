@@ -2,12 +2,7 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { PromptService } from "../../services/prompt";
 import { nanoid } from "nanoid";
-import type {
-  blocks,
-  promptBlocks,
-  prompts,
-  tagAssignments,
-} from "@/server/db/schema";
+import type { prompts, tagAssignments } from "@/server/db/schema";
 import type { InferSelectModel } from "drizzle-orm";
 
 export const promptRouter = createTRPCRouter({
@@ -62,6 +57,5 @@ export const promptRouter = createTRPCRouter({
 });
 
 export interface PromptDetailsDto extends InferSelectModel<typeof prompts> {
-  promptBlocks: InferSelectModel<typeof promptBlocks>[];
   tagAssignments: InferSelectModel<typeof tagAssignments>[];
 }

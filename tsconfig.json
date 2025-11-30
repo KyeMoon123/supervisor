@@ -44,7 +44,8 @@
     "**/*.cjs",
     "**/*.js",
     ".next/types/**/*.ts",
-    "src/app/(public)/login"
+    "src/app/(public)/login",
+    "src/client/components/tiptap/tiptap-ui/block-selector/block-select-trigger"
   ],
   "exclude": ["node_modules", "generated"]
 }

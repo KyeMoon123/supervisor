@@ -1,11 +1,8 @@
-import { pgTable, uuid, text, timestamp, jsonb } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
-import { sql } from "drizzle-orm";
-import { workspaces } from "./workspaces";
+import { relations, sql } from "drizzle-orm";
+import { jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
-import { folders } from "./folder";
-import { promptBlocks } from "./promptBlocks";
 import { tagAssignments } from "./tagAssignments";
+import { workspaces } from "./workspaces";
 
 export const prompts = pgTable(
   "prompts",
@@ -16,9 +13,6 @@ export const prompts = pgTable(
     workspaceId: uuid("workspace_id")
       .notNull()
       .references(() => workspaces.id, { onDelete: "cascade" }),
-    folderId: uuid("folder_id").references(() => folders.id, {
-      onDelete: "cascade",
-    }),
     title: text("title"),
     key: text("key"),
     description: text("description"),
@@ -45,14 +39,9 @@ export const promptsRelations = relations(prompts, ({ one, many }) => ({
     fields: [prompts.workspaceId],
     references: [workspaces.id],
   }),
-  folder: one(folders, {
-    fields: [prompts.folderId],
-    references: [folders.id],
-  }),
   creator: one(user, {
     fields: [prompts.createdBy],
     references: [user.id],
   }),
-  promptBlocks: many(promptBlocks),
   tagAssignments: many(tagAssignments),
 }));

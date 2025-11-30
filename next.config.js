@@ -5,6 +5,12 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  logging: {
+    fetches: {
+      fullUrl: false,
+    },
+  },
+};
 
 export default config;

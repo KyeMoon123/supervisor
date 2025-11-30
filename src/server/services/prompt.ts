@@ -37,11 +37,6 @@ async function getPromptDetails({
   const response = await db.query.prompts.findFirst({
     where: eq(prompts.id, id),
     with: {
-      promptBlocks: {
-        with: {
-          block: true,
-        },
-      },
       tagAssignments: {
         with: {
           tag: true,

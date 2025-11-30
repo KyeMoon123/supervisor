@@ -24,6 +24,7 @@ interface CreateWorkspaceParams {
   userId: string;
   slug?: string;
 }
+
 async function createWorkspace({ name, userId, slug }: CreateWorkspaceParams) {
   const workspaceSlug = slug ?? name.toLowerCase().replace(/ /g, "-");
   await db.transaction(async (tx) => {

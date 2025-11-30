@@ -100,16 +100,7 @@ export function AiMenuContent({
         }
       }
 
-      editor
-        .chain()
-        .aiTextPrompt({
-          text: promptWithContext,
-          insert: true,
-          stream: true,
-          tone: state.tone,
-          format: "rich-text",
-        })
-        .run();
+      editor.commands?.aiPromptWithContext?.(promptWithContext);
     },
     [editor, state.tone, state.fallbackAnchor, setFallbackAnchor]
   );
@@ -143,7 +134,7 @@ export function AiMenuContent({
   const handleInputOnClose = useCallback(() => {
     if (!editor) return;
     if (aiGenerationIsLoading) {
-      editor.commands.aiReject({ type: "reset" });
+      editor.commands.aiReject();
     } else {
       editor.commands.aiAccept();
     }
@@ -277,7 +268,7 @@ export function AiMenuProgress({ editor }: { editor: Editor }) {
   const handleStop = useCallback(() => {
     if (!editor) return;
 
-    editor.chain().aiReject({ type: "reset" }).run();
+    editor.chain().aiReject().run();
     reset();
     editor.commands.resetUiState();
   }, [editor, reset]);

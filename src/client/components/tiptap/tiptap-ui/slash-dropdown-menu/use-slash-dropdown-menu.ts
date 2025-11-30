@@ -1,39 +1,37 @@
 "use client";
 
-import { useCallback } from "react";
 import type { Editor } from "@tiptap/react";
+import { useCallback } from "react";
 
 // --- Icons ---
+import { AiSparklesIcon } from "@/components/tiptap/tiptap-icons/ai-sparkles-icon";
+import { BlockquoteIcon } from "@/components/tiptap/tiptap-icons/blockquote-icon";
 import { CodeBlockIcon } from "@/components/tiptap/tiptap-icons/code-block-icon";
 import { HeadingOneIcon } from "@/components/tiptap/tiptap-icons/heading-one-icon";
-import { HeadingTwoIcon } from "@/components/tiptap/tiptap-icons/heading-two-icon";
 import { HeadingThreeIcon } from "@/components/tiptap/tiptap-icons/heading-three-icon";
-import { ImageIcon } from "@/components/tiptap/tiptap-icons/image-icon";
+import { HeadingTwoIcon } from "@/components/tiptap/tiptap-icons/heading-two-icon";
 import { ListIcon } from "@/components/tiptap/tiptap-icons/list-icon";
 import { ListOrderedIcon } from "@/components/tiptap/tiptap-icons/list-ordered-icon";
-import { BlockquoteIcon } from "@/components/tiptap/tiptap-icons/blockquote-icon";
 import { ListTodoIcon } from "@/components/tiptap/tiptap-icons/list-todo-icon";
-import { AiSparklesIcon } from "@/components/tiptap/tiptap-icons/ai-sparkles-icon";
-import { MinusIcon } from "@/components/tiptap/tiptap-icons/minus-icon";
 import { TypeIcon } from "@/components/tiptap/tiptap-icons/type-icon";
-import { AtSignIcon } from "@/components/tiptap/tiptap-icons/at-sign-icon";
-import { SmilePlusIcon } from "@/components/tiptap/tiptap-icons/smile-plus-icon";
-import { TableIcon } from "@/components/tiptap/tiptap-icons/table-icon";
 
 // --- Lib ---
-import {
-  isExtensionAvailable,
-  isNodeInSchema,
-} from "@/client/lib/tiptap-utils";
 import {
   findSelectionPosition,
   hasContentAbove,
 } from "@/client/lib/tiptap-advanced-utils";
+import {
+  isExtensionAvailable,
+  isNodeInSchema,
+} from "@/client/lib/tiptap-utils";
 
 // --- Tiptap UI ---
+import {
+  addBlockSelectTrigger,
+  canAddBlockSelectTrigger,
+} from "@/client/components/tiptap/tiptap-ui/block-selector/use-block-select-trigger";
 import type { SuggestionItem } from "@/components/tiptap/tiptap-ui-utils/suggestion-menu";
-import { addEmojiTrigger } from "@/components/tiptap/tiptap-ui/emoji-trigger-button";
-import { addMentionTrigger } from "@/components/tiptap/tiptap-ui/mention-trigger-button";
+import { BlocksIcon } from "lucide-react";
 
 export interface SlashMenuConfig {
   enabledItems?: SlashMenuItemType[];
@@ -125,52 +123,12 @@ const texts = {
     badge: CodeBlockIcon,
     group: "Style",
   },
-
-  // Insert
-  mention: {
-    title: "Mention",
-    subtext: "Mention a user or item",
-    keywords: ["mention", "user", "item", "tag"],
-    badge: AtSignIcon,
-    group: "Insert",
-  },
-  emoji: {
-    title: "Emoji",
-    subtext: "Insert an emoji",
-    keywords: ["emoji", "emoticon", "smiley"],
-    badge: SmilePlusIcon,
-    group: "Insert",
-  },
-  table: {
-    title: "Table",
-    subtext: "Insert a table",
-    aliases: ["table", "insertTable"],
-    badge: TableIcon,
-    group: "Insert",
-  },
-  divider: {
-    title: "Separator",
-    subtext: "Horizontal line to separate content",
-    keywords: ["hr", "horizontalRule", "line", "separator"],
-    badge: MinusIcon,
-    group: "Insert",
-  },
-
-  // Upload
-  image: {
-    title: "Image",
-    subtext: "Resizable image with caption",
-    keywords: [
-      "image",
-      "imageUpload",
-      "upload",
-      "img",
-      "picture",
-      "media",
-      "url",
-    ],
-    badge: ImageIcon,
-    group: "Upload",
+  block_select: {
+    title: "Block Select",
+    subtext: "Select a block",
+    keywords: ["block", "select"],
+    badge: BlocksIcon,
+    group: "Block",
   },
 };
 
@@ -296,50 +254,10 @@ const getItemImplementations = () => {
         editor.chain().focus().toggleNode("codeBlock", "paragraph").run();
       },
     },
-
-    // Insert
-    mention: {
-      check: (editor: Editor) =>
-        isExtensionAvailable(editor, ["mention", "mentionAdvanced"]),
-      action: ({ editor }: { editor: Editor }) => addMentionTrigger(editor),
-    },
-    emoji: {
-      check: (editor: Editor) =>
-        isExtensionAvailable(editor, ["emoji", "emojiPicker"]),
-      action: ({ editor }: { editor: Editor }) => addEmojiTrigger(editor),
-    },
-    divider: {
-      check: (editor: Editor) => isNodeInSchema("horizontalRule", editor),
+    block_select: {
+      check: (editor: Editor) => canAddBlockSelectTrigger(editor),
       action: ({ editor }: { editor: Editor }) => {
-        editor.chain().focus().setHorizontalRule().run();
-      },
-    },
-    table: {
-      check: (editor: Editor) => isNodeInSchema("table", editor),
-      action: ({ editor }: { editor: Editor }) => {
-        editor
-          .chain()
-          .focus()
-          .insertTable({
-            rows: 3,
-            cols: 3,
-            withHeaderRow: false,
-          })
-          .run();
-      },
-    },
-
-    // Upload
-    image: {
-      check: (editor: Editor) => isNodeInSchema("image", editor),
-      action: ({ editor }: { editor: Editor }) => {
-        editor
-          .chain()
-          .focus()
-          .insertContent({
-            type: "imageUpload",
-          })
-          .run();
+        addBlockSelectTrigger(editor);
       },
     },
   };
@@ -383,6 +301,9 @@ export function useSlashDropdownMenu(config?: SlashMenuConfig) {
 
       const enabledItems =
         config?.enabledItems || (Object.keys(texts) as SlashMenuItemType[]);
+
+      console.log("enabledItems", enabledItems);
+
       const showGroups = config?.showGroups !== false;
 
       const itemImplementations = getItemImplementations();

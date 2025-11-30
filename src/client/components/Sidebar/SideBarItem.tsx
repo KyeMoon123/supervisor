@@ -16,22 +16,22 @@ interface SideBarItemProps {
 export default function SideBarItem({ href, icon, label }: SideBarItemProps) {
   return (
     <div>
-      <Tooltip>
-        <TooltipTrigger>
-          <Link
-            href={href}
-            className={cn(
-              "flex items-center gap-6 rounded-lg text-sm font-medium transition-colors w-full justify-center"
-            )}
-          >
-            {icon}
-            <span className="text-sm ">{label}</span>
-          </Link>
-        </TooltipTrigger>
-        <TooltipContent side="right" align="center">
-          <p>{label}</p>
-        </TooltipContent>
-      </Tooltip>
+      {/* <Tooltip>
+        <TooltipTrigger> */}
+      <Link
+        href={href}
+        className={cn(
+          "flex items-center gap-6 rounded-lg text-sm font-medium transition-colors w-full justify-center"
+        )}
+      >
+        {icon}
+        <span className="text-sm ">{label}</span>
+      </Link>
+      {/* </TooltipTrigger>
+        <TooltipContent side="right" align="center"> */}
+      <p>{label}</p>
+      {/* </TooltipContent>
+      </Tooltip> */}
     </div>
   );
 }

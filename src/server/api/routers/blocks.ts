@@ -2,10 +2,13 @@ import {
   UpdateBlockBodyInput,
   UpdateBlockInput,
 } from "@/shared/api-interface/blocks";
+import type { BlockDetailsDto } from "@/shared/api-interface/blocks";
 import { nanoid } from "nanoid";
 import { z } from "zod";
-import { BlocksService } from "../../services/blocks";
+import { BlocksService } from "../../services/blocks.service";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+
+export type { BlockDetailsDto };
 
 export const blocksRouter = createTRPCRouter({
   /**

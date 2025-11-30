@@ -1,9 +1,28 @@
-import { pgTable, uuid, text, timestamp, jsonb } from "drizzle-orm/pg-core";
-import { workspaces } from "./workspaces";
-import { promptBlocks } from "./promptBlocks";
 import { relations, sql } from "drizzle-orm";
+import {
+  jsonb,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 import { tagAssignments } from "./tagAssignments";
+import { workspaces } from "./workspaces";
+
+export const BlockCategory = pgEnum("category", [
+  "expert",
+  "persona",
+  "style",
+  "context",
+  "rules",
+  "output_format",
+  "examples",
+  "template",
+  "snippet",
+  "misc",
+]);
 
 export const blocks = pgTable("blocks", {
   id: uuid("id")
@@ -11,7 +30,7 @@ export const blocks = pgTable("blocks", {
     .primaryKey(),
   workspaceId: uuid("workspace_id").references(() => workspaces.id),
   title: text("title").notNull(),
-  type: text("type"), // "Role", "Persona", "Style", etc.
+  category: BlockCategory("category"),
   body: jsonb("body"),
   createdBy: text("created_by").references(() => user.id),
   description: text("description"),
@@ -24,7 +43,6 @@ export const blocksRelations = relations(blocks, ({ one, many }) => ({
     fields: [blocks.workspaceId],
     references: [workspaces.id],
   }),
-  promptBlocks: many(promptBlocks),
   creator: one(user, {
     fields: [blocks.createdBy],
     references: [user.id],

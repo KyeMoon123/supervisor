@@ -18,5 +18,11 @@ export const UpdateBlockInput = z.object({
 export type UpdateBlockInput = z.infer<typeof UpdateBlockInput>;
 
 export interface BlockDetailsDto extends InferSelectModel<typeof blocks> {
-  tagAssignments: InferSelectModel<typeof tagAssignments>[];
+  tagAssignments: (InferSelectModel<typeof tagAssignments> & {
+    tag: {
+      id: string;
+      workspaceId: string;
+      name: string;
+    };
+  })[];
 }

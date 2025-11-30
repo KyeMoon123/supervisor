@@ -25,7 +25,7 @@ export default function AuthenticatedLayout({
             <div className="">
               <SidebarTrigger />
             </div>
-            <div className="px-6">{children}</div>
+            <div className="p-6 ">{children}</div>
           </main>
         </SidebarInset>
       </SidebarProvider>
