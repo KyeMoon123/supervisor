@@ -2,8 +2,8 @@
 
 import { api } from "@/trpc/react";
 import type { BlockDetailsDto } from "@/server/api/routers/blocks";
-import { BlockHeader } from "./BlockHeader";
-import { BlockEditor } from "./BlockEditor";
+import { BlockHeader } from "../blocks/BlockHeader";
+import { BlockEditor } from "../blocks/BlockEditor";
 import { EditorProvider } from "../tiptap/notion-like-editor";
 import { Textarea } from "@/client/primatives/textarea";
 import { Button } from "@/client/primatives/button";
@@ -52,11 +52,9 @@ export function BlockDetail({ blockDetails }: BlockDetailProps) {
           blockDetails={blockDetails}
           onUpdate={handleMetadataUpdate}
         />
-        <BlockEditor />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <PromptChat />
+        <div className="flex flex-col gap-2">
+          <BlockEditor />
+        </div>
       </div>
     </EditorProvider>
   );
@@ -95,14 +93,14 @@ const PromptChat = () => {
     // Focus editor and get starting position
     editor.commands.focus("end");
     const startPos = editor.state.selection.to;
-    
+
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
 
       const chunk = decoder.decode(value, { stream: true });
       buffer += chunk;
-      
+
       // Update display state
       setAccumulatedText(buffer);
 
@@ -114,11 +112,11 @@ const PromptChat = () => {
     if (buffer.length > 0) {
       // Calculate current position after inserting text
       const currentPos = editor.state.selection.to;
-      
+
       // Select all the text we just inserted
-      editor.commands.setTextSelection({ 
-        from: startPos, 
-        to: currentPos 
+      editor.commands.setTextSelection({
+        from: startPos,
+        to: currentPos,
       });
       editor.commands.deleteSelection();
 

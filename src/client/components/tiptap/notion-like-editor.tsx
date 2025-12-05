@@ -5,12 +5,13 @@ import { useContext, useEffect, useRef } from "react";
 
 // --- Tiptap Core Extensions ---
 import { Typography } from "@tiptap/extension-typography";
-import { Placeholder } from "@tiptap/extensions";
+import { Placeholder, Selection } from "@tiptap/extensions";
 import { Markdown } from "@tiptap/markdown";
 import { StarterKit } from "@tiptap/starter-kit";
+import { Color, TextStyle } from "@tiptap/extension-text-style";
 
 // --- Hooks ---
-import { useScrollToHash } from "@/client/components/tiptap/tiptap-ui/copy-anchor-link-button/use-scroll-to-hash";
+import { useScrollToHash } from "@/client/hooks/use-scroll-to-hash";
 
 // --- Custom Extensions ---
 import { UiState } from "@/client/components/tiptap/tiptap-extension/ui-state-extension";
@@ -30,8 +31,7 @@ import { BlockSelectMenu } from "./tiptap-ui/block-selector/block-select-menu";
 import "@/components/tiptap/notion-like-editor.scss";
 import { api } from "@/trpc/react";
 import { useDebounce } from "@uidotdev/usehooks";
-import { AiMenu } from "./tiptap-ui/ai-menu";
-import AI from "./tiptap-extension/ai-extension";
+
 // --- Content ---
 
 export interface EditorProviderProps {
@@ -59,8 +59,6 @@ export function EditorContentArea() {
       role="presentation"
       className="notion-like-editor-content"
     >
-      <AiMenu />
-      {/* <EmojiDropdownMenu /> */}
       <BlockSelectMenu />
       <SlashDropdownMenu />
     </EditorContent>
@@ -94,9 +92,7 @@ export function EditorProvider({
           gfm: true, // GitHub Flavored Markdown
         },
       }),
-      AI,
       StarterKit.configure({
-        undoRedo: false,
         horizontalRule: false,
         dropcursor: {
           width: 2,
@@ -107,8 +103,10 @@ export function EditorProvider({
         placeholder,
         emptyNodeClass: "is-empty with-slash",
       }),
-      Typography,
       UiState,
+      Selection,
+      Color,
+      TextStyle,
     ],
   });
 

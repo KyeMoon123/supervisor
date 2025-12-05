@@ -44,20 +44,20 @@ export interface SlashMenuConfig {
 
 const texts = {
   // AI
-  continue_writing: {
-    title: "Continue Writing",
-    subtext: "Continue writing from the current position",
-    keywords: ["continue", "write", "continue writing", "ai"],
-    badge: AiSparklesIcon,
-    group: "AI",
-  },
-  ai_ask_button: {
-    title: "Ask AI",
-    subtext: "Ask AI to generate content",
-    keywords: ["ai", "ask", "generate"],
-    badge: AiSparklesIcon,
-    group: "AI",
-  },
+  // continue_writing: {
+  //   title: "Continue writing with AI",
+  //   subtext: "Continue writing from the current position",
+  //   keywords: ["continue", "write", "continue writing", "ai"],
+  //   badge: AiSparklesIcon,
+  //   group: "AI",
+  // },
+  // ai_ask_button: {
+  //   title: "Generate with AI",
+  //   subtext: "Generate content with AI",
+  //   keywords: ["ai", "ask", "generate"],
+  //   badge: AiSparklesIcon,
+  //   group: "AI",
+  // },
 
   // Style
   text: {
@@ -81,13 +81,6 @@ const texts = {
     badge: HeadingTwoIcon,
     group: "Style",
   },
-  heading_3: {
-    title: "Heading 3",
-    subtext: "Subsection and group heading",
-    keywords: ["h3", "heading3", "subheading"],
-    badge: HeadingThreeIcon,
-    group: "Style",
-  },
   bullet_list: {
     title: "Bullet List",
     subtext: "List with unordered items",
@@ -95,20 +88,20 @@ const texts = {
     badge: ListIcon,
     group: "Style",
   },
-  ordered_list: {
-    title: "Numbered List",
-    subtext: "List with ordered items",
-    keywords: ["ol", "li", "list", "numberedlist", "numbered list"],
-    badge: ListOrderedIcon,
-    group: "Style",
-  },
-  task_list: {
-    title: "To-do list",
-    subtext: "List with tasks",
-    keywords: ["tasklist", "task list", "todo", "checklist"],
-    badge: ListTodoIcon,
-    group: "Style",
-  },
+  // ordered_list: {
+  //   title: "Numbered List",
+  //   subtext: "List with ordered items",
+  //   keywords: ["ol", "li", "list", "numberedlist", "numbered list"],
+  //   badge: ListOrderedIcon,
+  //   group: "Style",
+  // },
+  // task_list: {
+  //   title: "To-do list",
+  //   subtext: "List with tasks",
+  //   keywords: ["tasklist", "task list", "todo", "checklist"],
+  //   badge: ListTodoIcon,
+  //   group: "Style",
+  // },
   quote: {
     title: "Blockquote",
     subtext: "Blockquote block",
@@ -136,69 +129,6 @@ export type SlashMenuItemType = keyof typeof texts;
 
 const getItemImplementations = () => {
   return {
-    // AI
-    continue_writing: {
-      check: (editor: Editor) => {
-        const { hasContent } = hasContentAbove(editor);
-        const extensionsReady = isExtensionAvailable(editor, [
-          "ai",
-          "aiAdvanced",
-        ]);
-        return extensionsReady && hasContent;
-      },
-      action: ({ editor }: { editor: Editor }) => {
-        const editorChain = editor.chain().focus();
-
-        const nodeSelectionPosition = findSelectionPosition({ editor });
-
-        if (nodeSelectionPosition !== null) {
-          editorChain.setNodeSelection(nodeSelectionPosition);
-        }
-
-        editorChain.run();
-
-        editor.chain().focus().aiGenerationShow().run();
-
-        requestAnimationFrame(() => {
-          const { hasContent, content } = hasContentAbove(editor);
-
-          const snippet =
-            content.length > 500 ? `...${content.slice(-500)}` : content;
-
-          const prompt = hasContent
-            ? `Context: ${snippet}\n\nContinue writing from where the text above ends. Write ONLY ONE SENTENCE. DONT REPEAT THE TEXT.`
-            : "Start writing a new paragraph. Write ONLY ONE SENTENCE.";
-
-          editor
-            .chain()
-            .focus()
-            .aiTextPrompt({
-              stream: true,
-              format: "rich-text",
-              text: prompt,
-            })
-            .run();
-        });
-      },
-    },
-    ai_ask_button: {
-      check: (editor: Editor) =>
-        isExtensionAvailable(editor, ["ai", "aiAdvanced"]),
-      action: ({ editor }: { editor: Editor }) => {
-        const editorChain = editor.chain().focus();
-
-        const nodeSelectionPosition = findSelectionPosition({ editor });
-
-        if (nodeSelectionPosition !== null) {
-          editorChain.setNodeSelection(nodeSelectionPosition);
-        }
-
-        editorChain.run();
-
-        editor.chain().focus().aiGenerationShow().run();
-      },
-    },
-
     // Style
     text: {
       check: (editor: Editor) => isNodeInSchema("paragraph", editor),
@@ -218,28 +148,10 @@ const getItemImplementations = () => {
         editor.chain().focus().toggleHeading({ level: 2 }).run();
       },
     },
-    heading_3: {
-      check: (editor: Editor) => isNodeInSchema("heading", editor),
-      action: ({ editor }: { editor: Editor }) => {
-        editor.chain().focus().toggleHeading({ level: 3 }).run();
-      },
-    },
     bullet_list: {
       check: (editor: Editor) => isNodeInSchema("bulletList", editor),
       action: ({ editor }: { editor: Editor }) => {
         editor.chain().focus().toggleBulletList().run();
-      },
-    },
-    ordered_list: {
-      check: (editor: Editor) => isNodeInSchema("orderedList", editor),
-      action: ({ editor }: { editor: Editor }) => {
-        editor.chain().focus().toggleOrderedList().run();
-      },
-    },
-    task_list: {
-      check: (editor: Editor) => isNodeInSchema("taskList", editor),
-      action: ({ editor }: { editor: Editor }) => {
-        editor.chain().focus().toggleTaskList().run();
       },
     },
     quote: {
@@ -302,8 +214,6 @@ export function useSlashDropdownMenu(config?: SlashMenuConfig) {
       const enabledItems =
         config?.enabledItems || (Object.keys(texts) as SlashMenuItemType[]);
 
-      console.log("enabledItems", enabledItems);
-
       const showGroups = config?.showGroups !== false;
 
       const itemImplementations = getItemImplementations();
@@ -314,7 +224,7 @@ export function useSlashDropdownMenu(config?: SlashMenuConfig) {
 
         if (itemImpl && itemText && itemImpl.check(editor)) {
           const item: SuggestionItem = {
-            onSelect: ({ editor }) => itemImpl.action({ editor }),
+            onSelect: ({ editor }) => itemImpl.action!({ editor }),
             ...itemText,
           };
 

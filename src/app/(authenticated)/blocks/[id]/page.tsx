@@ -1,7 +1,7 @@
 "use client";
 import { api } from "@/trpc/react";
 import { useParams } from "next/navigation";
-import { BlockDetail } from "@/client/components/Blocks/block-details";
+import { BlockDetail } from "@/client/components/blocks/block-details";
 
 export default function BlockDetailPage() {
   const { id } = useParams();

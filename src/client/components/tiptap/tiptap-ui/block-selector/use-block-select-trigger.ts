@@ -131,7 +131,7 @@ function insertTriggerInTextNode(
  */
 export function addBlockSelectTrigger(
   editor: Editor | null,
-  trigger: string = ":",
+  trigger: string = "@",
   node?: Node | null,
   nodePos?: number | null
 ): boolean {

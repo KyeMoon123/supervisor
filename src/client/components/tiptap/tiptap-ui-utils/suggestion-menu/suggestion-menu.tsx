@@ -45,11 +45,6 @@ export const SuggestionMenu = ({
 
   const [show, setShow] = useState<boolean>(false);
 
-  // If later we want the floating stick to the position while browser is scrolling,
-  // we can uncomment this part and pass the getBoundingClientRect prop to FloatingElement instead of referenceElement.
-  // const [internalClientRect, setInternalClientRect] = useState<DOMRect | null>(
-  //   null
-  // )
   const [internalDecorationNode, setInternalDecorationNode] =
     useState<HTMLElement | null>(null);
   const [internalCommand, setInternalCommand] = useState<

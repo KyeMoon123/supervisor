@@ -1,34 +1,27 @@
 "use client";
+import { GlobalSearch } from "@/client/components/Home/global-search";
+import HomeActions from "@/client/components/Home/HomeActions";
 import { useAuth } from "@/client/context/AuthContext";
-import HomeActionsAndFilters from "@/client/components/Home/HomeActionsAndFilters";
-import FoldersGrid from "@/client/components/Folders/FoldersGrid";
-import PromptsGrid from "@/client/components/Prompt/PromptsGrid";
-import { Separator } from "@/client/primatives/separator";
-import BlocksGrid from "@/client/components/Blocks/BlockGrid";
+import { HomeItemsGrid } from "@/client/components/Home/home-grid";
+import { ScrollArea } from "@/client/primatives/scroll-area";
 
 export default function HomePage() {
   const { session, isPending, error, refetch } = useAuth();
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-center">
-        <h1>Global Search bar goes here</h1>
+      <div className="flex justify-center mx-auto mb-4 min-w-3xl ">
+        <GlobalSearch />
       </div>
-      <div className="flex">
-        <HomeActionsAndFilters />
-      </div>
-      <div className="flex ">
-        <h2>Folders</h2>
-        <FoldersGrid />
-      </div>
-      <Separator />
-      <div className="flex ">
-        <h2>Prompts</h2>
-        <PromptsGrid />
-      </div>
-      <Separator />
-      <div className="flex ">
-        <h2>Blocks</h2>
-        <BlocksGrid />
+
+      <div className="mt-8  flex flex-col gap-4 px-4 sm:px-8 md:px-20 ">
+        <div className="flex  w-full  justify-end">
+          <HomeActions />
+        </div>
+        <ScrollArea className="h-[80vh] w-full  ">
+          <div className="mb-20">
+            <HomeItemsGrid />
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );

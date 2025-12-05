@@ -21,10 +21,6 @@ declare module "@tiptap/core" {
       aiGenerationHide: () => ReturnType;
       aiGenerationHasMessage: (value: boolean) => ReturnType;
 
-      commentInputShow: () => ReturnType;
-      commentInputHide: () => ReturnType;
-
-      setLockDragHandle: (value: boolean) => ReturnType;
       setBlockSelectMenuItems: (blocks: Block[]) => ReturnType;
 
       resetUiState: () => ReturnType;
@@ -70,22 +66,14 @@ export const UiState = Extension.create<UiState>({
     };
 
     return {
-      // AI Generation commands
-      // aiGenerationSetIsSelection: createBooleanSetter(
-      //   "aiGenerationIsSelection"
-      // ),
-      // aiGenerationSetIsLoading: createBooleanSetter("aiGenerationIsLoading"),
-      // aiGenerationHasMessage: createBooleanSetter("aiGenerationHasMessage"),
-      // aiGenerationShow: createToggle("aiGenerationActive", true),
-      // aiGenerationHide: createToggle("aiGenerationActive", false),
-
-      // // Comment input commands
-      // commentInputShow: createToggle("commentInputVisible", true),
-      // commentInputHide: createToggle("commentInputVisible", false),
-
-      // // Drag handle commands
-      // setLockDragHandle: createBooleanSetter("lockDragHandle"),
-      // setIsDragging: createBooleanSetter("isDragging"),
+      //AI Generation commands
+      aiGenerationSetIsSelection: createBooleanSetter(
+        "aiGenerationIsSelection"
+      ),
+      aiGenerationSetIsLoading: createBooleanSetter("aiGenerationIsLoading"),
+      aiGenerationHasMessage: createBooleanSetter("aiGenerationHasMessage"),
+      aiGenerationShow: createToggle("aiGenerationActive", true),
+      aiGenerationHide: createToggle("aiGenerationActive", false),
 
       setBlockSelectMenuItems: (blocks: Block[]) => () => {
         this.storage.blockSelectMenuItems = blocks;

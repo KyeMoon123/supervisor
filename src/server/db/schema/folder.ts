@@ -14,6 +14,7 @@ export const folders = pgTable(
       .notNull()
       .references(() => workspaces.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
+    description: text("description"),
     parentFolderId: uuid("parent_folder_id"),
     createdBy: text("created_by").references(() => user.id),
     createdAt: timestamp("created_at", { withTimezone: true })

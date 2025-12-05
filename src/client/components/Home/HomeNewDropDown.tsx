@@ -30,7 +30,7 @@ export function HomeNewDropDown({
           New
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-72 mr-4" align="start">
+      <DropdownMenuContent className="w-72 mr-4" align="end">
         <DropdownMenuGroup>
           <NewActionItem
             label="Folder"

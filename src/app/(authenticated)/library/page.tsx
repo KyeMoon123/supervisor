@@ -1,8 +1,8 @@
 "use client";
 import { useAuth } from "@/client/context/AuthContext";
-import HomeActionsAndFilters from "@/client/components/Home/HomeActionsAndFilters";
-import FoldersGrid from "@/client/components/Folders/FoldersGrid";
-import PromptsGrid from "@/client/components/Prompt/PromptsGrid";
+import HomeActionsAndFilters from "@/client/components/Home/HomeActions";
+import FoldersGrid from "@/client/components/folders/folders-grid";
+import PromptsGrid from "@/client/components/Prompt/prompts-grid";
 import { Separator } from "@/client/primatives/separator";
 
 export default function LibraryPage() {
