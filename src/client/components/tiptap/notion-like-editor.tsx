@@ -15,6 +15,8 @@ import { useScrollToHash } from "@/client/hooks/use-scroll-to-hash";
 
 // --- Custom Extensions ---
 import { UiState } from "@/client/components/tiptap/tiptap-extension/ui-state-extension";
+import { Variable } from "@/client/components/tiptap/tiptap-node/variable-node";
+import { VariableSuggestion } from "@/client/components/tiptap/tiptap-extension/variable-suggestion";
 
 import "@/components/tiptap/tiptap-node/blockquote-node/blockquote-node.scss";
 import "@/components/tiptap/tiptap-node/code-block-node/code-block-node.scss";
@@ -26,6 +28,7 @@ import "@/components/tiptap/tiptap-node/paragraph-node/paragraph-node.scss";
 // --- Tiptap UI ---
 import { SlashDropdownMenu } from "@/client/components/tiptap/tiptap-ui/slash-dropdown-menu";
 import { BlockSelectMenu } from "./tiptap-ui/block-selector/block-select-menu";
+import { VariableInputMenu } from "./tiptap-ui/variable-menu/variable-input-menu";
 
 // --- Styles ---
 import "@/components/tiptap/notion-like-editor.scss";
@@ -61,6 +64,7 @@ export function EditorContentArea() {
     >
       <BlockSelectMenu />
       <SlashDropdownMenu />
+      <VariableInputMenu />
     </EditorContent>
   );
 }
@@ -107,6 +111,8 @@ export function EditorProvider({
       Selection,
       Color,
       TextStyle,
+      Variable,
+      VariableSuggestion,
     ],
   });
 
@@ -160,10 +166,10 @@ export function EditorProvider({
   }, [debouncedEditorContent, handleUpdate]);
 
   return (
-    <div className="notion-like-editor-wrapper">
-      <EditorContext.Provider value={{ editor }}>
-        {children}
-      </EditorContext.Provider>
-    </div>
+    // <div className="notion-like-editor-wrapper">
+    <EditorContext.Provider value={{ editor }}>
+      {children}
+    </EditorContext.Provider>
+    // </div>
   );
 }

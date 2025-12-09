@@ -1,21 +1,13 @@
-"use client";
-
+import type { Editor } from "@tiptap/react";
 import type { Node } from "@tiptap/pm/model";
-import { type Editor } from "@tiptap/react";
-
-// --- Lib ---
-import { findNodePosition, isValidPosition } from "@/client/lib/tiptap-utils";
-
-// --- Icons ---
-
-export const BLOCK_SELECT_TRIGGER_SHORTCUT_KEY = "mod+shift+b";
+import { isValidPosition, findNodePosition } from "@/client/lib/tiptap-utils";
 
 /**
  * Checks if block select trigger can be added in the current editor state
  */
 export function canAddBlockSelectTrigger(editor: Editor | null): boolean {
   if (!editor || !editor.isEditable) return false;
-  if (editor.storage.uiState.blockSelectMenuItems.length === 0) {
+  if (!editor.storage.uiState?.blockSelectMenuItems?.length) {
     return false;
   }
   return true;
@@ -137,6 +129,29 @@ export function addBlockSelectTrigger(
 ): boolean {
   if (!editor || !editor.isEditable) return false;
   if (!canAddBlockSelectTrigger(editor)) return false;
+
+  try {
+    const { $from } = editor.state.selection;
+    const currentNode = $from.node();
+    const isBlockNode = currentNode.isBlock && !currentNode.isTextblock;
+
+    if (isBlockNode) {
+      return insertTriggerInBlockNode(editor, trigger, node, nodePos);
+    }
+
+    return insertTriggerInTextNode(editor, trigger, node, nodePos);
+  } catch {
+    return false;
+  }
+}
+
+export function addVariableInputTrigger(
+  editor: Editor,
+  trigger: string = "{{",
+  node?: Node | null,
+  nodePos?: number | null
+): boolean {
+  if (!editor || !editor.isEditable) return false;
 
   try {
     const { $from } = editor.state.selection;

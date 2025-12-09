@@ -8,10 +8,10 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
-import { tagAssignments } from "./tagAssignments";
 import { workspaces } from "./workspaces";
+import { z } from "zod";
 
-export const BlockCategory = pgEnum("category", [
+export const BlockCategoryEnum = pgEnum("category", [
   "expert",
   "persona",
   "style",
@@ -24,14 +24,19 @@ export const BlockCategory = pgEnum("category", [
   "misc",
 ]);
 
+export const BlockCategorySchema = z.enum(BlockCategoryEnum.enumValues);
+export const BlockCategorySchemaArray = z.array(BlockCategorySchema);
+export type TBlockCategory = z.infer<typeof BlockCategorySchema>;
+
 export const blocks = pgTable("blocks", {
   id: uuid("id")
     .default(sql`gen_random_uuid()`)
     .primaryKey(),
   workspaceId: uuid("workspace_id").references(() => workspaces.id),
   title: text("title").notNull(),
-  category: BlockCategory("category"),
+  category: BlockCategoryEnum("category"),
   body: jsonb("body"),
+  tags: text("tags").array(),
   createdBy: text("created_by").references(() => user.id),
   description: text("description"),
   createdAt: timestamp("created_at").defaultNow(),
@@ -47,5 +52,4 @@ export const blocksRelations = relations(blocks, ({ one, many }) => ({
     fields: [blocks.createdBy],
     references: [user.id],
   }),
-  tagAssignments: many(tagAssignments),
 }));

@@ -5,7 +5,6 @@ import { promptRouter } from "./routers/prompt";
 import { workspaceRouter } from "./routers/workspace";
 import { userRouter } from "./routers/user";
 import { blocksRouter } from "./routers/blocks";
-import { tagsRouter } from "./routers/tags";
 
 /**
  * This is the primary router for your server.
@@ -19,7 +18,6 @@ export const appRouter = createTRPCRouter({
   workspace: workspaceRouter,
   user: userRouter,
   blocks: blocksRouter,
-  tags: tagsRouter,
 });
 
 // export type definition of API

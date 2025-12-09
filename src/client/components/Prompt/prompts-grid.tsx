@@ -36,6 +36,7 @@ export default function PromptsGrid() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {prompts.map((prompt) => (
           <Card
+            onClick={() => router.push(`/prompts/${prompt.id}`)}
             key={prompt.id}
             className="p-5 hover:shadow-md transition-all hover:border-primary cursor-pointer bg-card border-border"
           >

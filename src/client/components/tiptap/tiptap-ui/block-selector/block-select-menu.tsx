@@ -121,6 +121,7 @@ const BlockList = ({
   onSelect,
 }: SuggestionMenuRenderProps<Block>) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const filteredItems = useMemo(() => {
     if (!searchQuery.trim()) return items;
@@ -152,6 +153,13 @@ const BlockList = ({
     return rendered;
   }, [filteredItems, selectedIndex, onSelect]);
 
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Allow arrow keys to navigate the list instead of moving cursor in input
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+    }
+  };
+
   return (
     <Card
       style={{
@@ -162,10 +170,12 @@ const BlockList = ({
       <CardBody className="flex flex-col gap-2">
         <div className="px-2 pt-2">
           <Input
+            ref={inputRef}
             type="text"
             placeholder="Search blocks..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleInputKeyDown}
             className="w-full"
             autoFocus
           />

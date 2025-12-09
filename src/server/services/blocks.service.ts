@@ -6,7 +6,6 @@ import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "../db";
 import { blocks } from "../db/schema/blocks";
-import { tagAssignments } from "../db/schema/tagAssignments";
 import { pickDefined } from "@/shared/utils/utils";
 
 export const BlocksService = {
@@ -48,27 +47,11 @@ async function getBlockDetails({
 }): Promise<BlockDetailsDto> {
   const block = await db.query.blocks.findFirst({
     where: eq(blocks.id, id),
-    with: {
-      tagAssignments: {
-        with: {
-          tag: true,
-        },
-      },
-    },
   });
   if (!block) {
     throw new Error("Block not found");
   }
-  // Filter out tag assignments where tag is null
-  const tagAssignments = block.tagAssignments.filter(
-    (ta): ta is typeof ta & { tag: NonNullable<typeof ta.tag> } =>
-      ta.tag !== null
-  );
-
-  return {
-    ...block,
-    tagAssignments,
-  };
+  return block;
 }
 
 async function updateBlockBody({ id, body }: { id: string; body: unknown }) {
@@ -81,20 +64,12 @@ async function updateBlock({
   id,
   title,
   description,
-  type,
-  tagIds,
+  category,
+  tags,
 }: UpdateBlockInput) {
-  const updateData = pickDefined({ title, description, type });
+  const updateData = pickDefined({ title, description, category, tags });
   if (Object.keys(updateData).length > 0) {
     await db.update(blocks).set(updateData).where(eq(blocks.id, id));
-  }
-  if (tagIds) {
-    await db.delete(tagAssignments).where(eq(tagAssignments.blockId, id));
-    if (tagIds.length > 0) {
-      await db
-        .insert(tagAssignments)
-        .values(tagIds.map((tagId) => ({ blockId: id, tagId })));
-    }
   }
   const [updated] = await db.select().from(blocks).where(eq(blocks.id, id));
   return updated;

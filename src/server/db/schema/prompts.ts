@@ -1,8 +1,25 @@
 import { relations, sql } from "drizzle-orm";
-import { jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  jsonb,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
-import { tagAssignments } from "./tagAssignments";
 import { workspaces } from "./workspaces";
+import { z } from "zod";
+
+export const PromptCategoryEnum = pgEnum("category", [
+  "prompt",
+  "template",
+  "snippet",
+]);
+
+export const PromptCategorySchema = z.enum(PromptCategoryEnum.enumValues);
+export const PromptCategorySchemaArray = z.array(PromptCategorySchema);
+export type TPromptCategory = z.infer<typeof PromptCategorySchema>;
 
 export const prompts = pgTable(
   "prompts",
@@ -17,6 +34,8 @@ export const prompts = pgTable(
     key: text("key"),
     description: text("description"),
     body: jsonb("body"),
+    tags: text("tags").array(),
+    category: PromptCategoryEnum("category"),
     createdBy: text("created_by").references(() => user.id),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -34,7 +53,7 @@ export const prompts = pgTable(
   ]
 );
 
-export const promptsRelations = relations(prompts, ({ one, many }) => ({
+export const promptsRelations = relations(prompts, ({ one }) => ({
   workspace: one(workspaces, {
     fields: [prompts.workspaceId],
     references: [workspaces.id],
@@ -43,5 +62,4 @@ export const promptsRelations = relations(prompts, ({ one, many }) => ({
     fields: [prompts.createdBy],
     references: [user.id],
   }),
-  tagAssignments: many(tagAssignments),
 }));

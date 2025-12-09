@@ -28,9 +28,7 @@ export default function RootLayout({
       <body className="m-0" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="dark">
           <TRPCReactProvider>
-            <div className="flex flex-col h-screen w-full box-border  ">
-              {children}
-            </div>
+            <div className="flex flex-col  w-full box-border  ">{children}</div>
             <Toaster richColors />
           </TRPCReactProvider>
         </ThemeProvider>

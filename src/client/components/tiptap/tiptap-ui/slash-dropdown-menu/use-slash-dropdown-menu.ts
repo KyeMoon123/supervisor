@@ -28,10 +28,11 @@ import {
 // --- Tiptap UI ---
 import {
   addBlockSelectTrigger,
+  addVariableInputTrigger,
   canAddBlockSelectTrigger,
-} from "@/client/components/tiptap/tiptap-ui/block-selector/use-block-select-trigger";
+} from "@/client/hooks/use-add-trigger";
 import type { SuggestionItem } from "@/components/tiptap/tiptap-ui-utils/suggestion-menu";
-import { BlocksIcon } from "lucide-react";
+import { BlocksIcon, VariableIcon } from "lucide-react";
 
 export interface SlashMenuConfig {
   enabledItems?: SlashMenuItemType[];
@@ -118,10 +119,17 @@ const texts = {
   },
   block_select: {
     title: "Block Select",
-    subtext: "Select a block",
+    subtext: "Insert a block",
     keywords: ["block", "select"],
     badge: BlocksIcon,
-    group: "Block",
+    group: "Content",
+  },
+  insert_variable: {
+    title: "Insert Variable",
+    subtext: "Add a variable",
+    keywords: ["variable", "add", "insert"],
+    badge: VariableIcon,
+    group: "Content",
   },
 };
 
@@ -170,6 +178,12 @@ const getItemImplementations = () => {
       check: (editor: Editor) => canAddBlockSelectTrigger(editor),
       action: ({ editor }: { editor: Editor }) => {
         addBlockSelectTrigger(editor);
+      },
+    },
+    insert_variable: {
+      check: (editor: Editor) => isNodeInSchema("variable", editor),
+      action: ({ editor }: { editor: Editor }) => {
+        addVariableInputTrigger(editor);
       },
     },
   };

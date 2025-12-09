@@ -1,11 +1,5 @@
 "use client";
-import { Button } from "@/client/primatives/button";
-import {
-  Card,
-  CardTitle,
-  CardHeader,
-  CardFooter,
-} from "@/client/primatives/card";
+import { Card } from "@/client/primatives/card";
 import { api } from "@/trpc/react";
 import { FolderIcon } from "lucide-react";
 
