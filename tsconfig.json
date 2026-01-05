@@ -46,6 +46,6 @@
     ".next/types/**/*.ts",
     "src/app/(public)/login",
     "src/client/components/tiptap/tiptap-ui/block-selector/block-select-trigger"
-  ],
+, "example.drizzle.config.ts"  ],
   "exclude": ["node_modules", "generated"]
 }
