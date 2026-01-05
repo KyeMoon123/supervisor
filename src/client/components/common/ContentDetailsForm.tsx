@@ -10,7 +10,11 @@ import {
   SelectValue,
 } from "@/client/primatives/select";
 import { Textarea } from "@/client/primatives/textarea";
-import { Field, FieldError, FieldLabel } from "@/client/primatives/field";
+import {
+  Field,
+  FieldError,
+  FieldLabel,
+} from "@/client/primatives/field";
 import {
   BlockCategoryEnum,
   type TBlockCategory,
@@ -31,14 +35,11 @@ import {
   HoverCardTrigger,
 } from "@/client/primatives/hover-card";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { api } from "@/trpc/react";
-import { ConfirmationDialog } from "@/client/common/ConfirmationDialog";
-import { useRouter } from "next/navigation";
 
 type FormValues = {
   title: string;
   description: string;
-  category: string;
+  category: TBlockCategory;
   tags: string[];
 };
 
@@ -46,9 +47,8 @@ interface ContentDetails {
   id: string;
   title: string | null;
   description: string | null;
-  category: string;
+  category: TBlockCategory;
   tags: string[];
-  archivedAt: Date | null;
 }
 
 interface ContentDetailsFormProps {
@@ -61,11 +61,6 @@ export function ContentDetailsForm({
   onUpdate,
 }: ContentDetailsFormProps) {
   const [tagInput, setTagInput] = useState("");
-  const router = useRouter();
-  const archiveBlockMutation = api.blocks.archiveBlock.useMutation();
-  const unarchiveBlockMutation = api.blocks.unarchiveBlock.useMutation();
-  const deleteBlockMutation = api.blocks.deleteBlock.useMutation();
-  const utils = api.useUtils();
 
   const form = useForm<FormValues>({
     defaultValues: {
@@ -131,55 +126,19 @@ export function ContentDetailsForm({
 
   const handleRemoveTag = (tagToRemove: string) => {
     const currentTags = form.watch("tags") ?? [];
-    onUpdate(details.id, {
-      tags: currentTags.filter((tag) => tag !== tagToRemove),
-    });
+    onUpdate(details.id, { tags: currentTags.filter((tag) => tag !== tagToRemove) });
     form.setValue(
       "tags",
       currentTags.filter((tag) => tag !== tagToRemove)
     );
   };
 
-  const handleArchive = async () => {
-    if (details.archivedAt) {
-      await unarchiveBlockMutation.mutate(
-        { id: details.id },
-        {
-          onSuccess: async () => {
-            await utils.blocks.getBlock.refetch();
-          },
-        }
-      );
-    } else {
-      await archiveBlockMutation.mutate(
-        { id: details.id },
-        {
-          onSuccess: async () => {
-            await utils.blocks.getBlock.refetch();
-          },
-        }
-      );
-    }
-  };
-
-  const handleDelete = async () => {
-    await deleteBlockMutation.mutateAsync({ id: details.id });
-    await utils.blocks.getBlock.refetch();
-  };
-
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <div className="pb-3">
+      <div className="border-b border-border/40 pb-3">
         <div className="flex items-center justify-between gap-4">
-          {details.archivedAt && (
-            <div className="flex items-center gap-2">
-              <Badge variant={details.archivedAt ? "destructive" : "default"}>
-                Archived
-              </Badge>
-            </div>
-          )}
           {/* Compact title display */}
           <div className="flex items-center gap-3 min-w-0 flex-1">
             <Controller
@@ -335,31 +294,6 @@ export function ContentDetailsForm({
               )}
             </Field>
           </form>
-          <div className="flex items-center gap-2 justify-end mt-4">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={async () => {
-                await handleArchive();
-              }}
-              isLoading={
-                archiveBlockMutation.isPending ||
-                unarchiveBlockMutation.isPending
-              }
-            >
-              {details.archivedAt ? "Unarchive" : "Archive"}
-            </Button>
-            <ConfirmationDialog
-              triggerText="Delete"
-              onConfirm={async () => {
-                await handleDelete();
-              }}
-              type="destructive"
-              title="Delete Block"
-              description="Are you sure you want to delete this block? This action cannot be undone."
-              loading={deleteBlockMutation.isPending}
-            />
-          </div>
         </CollapsibleContent>
       </div>
     </Collapsible>
