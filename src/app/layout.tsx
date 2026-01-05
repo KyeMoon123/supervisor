@@ -12,9 +12,9 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Professional Supervision | Find Trusted Supervisors",
+  title: "Supervisee by Praxiss | Find Trusted Supervisors",
   description:
-    "Connect with experienced Occupational Therapy supervisors for professional supervision. Stay compliant, grow with confidence.",
+    "Supervisee by Praxiss connects you with experienced Occupational Therapy supervisors for professional supervision. Stay compliant and grow with confidence.",
   generator: "v0.app",
   icons: {
     icon: [

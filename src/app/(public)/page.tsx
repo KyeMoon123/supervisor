@@ -487,8 +487,7 @@ export default async function Home() {
                 provide therapy or clinical services to clients.
               </p>
               <p className="mt-4 text-xs text-muted-foreground">
-                © {new Date().getFullYear()} Professional Supervision Platform.
-                All rights reserved.
+                © {new Date().getFullYear()} Supervisee by Praxiss. All rights reserved.
               </p>
             </div>
           </div>

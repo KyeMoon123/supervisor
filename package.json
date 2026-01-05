@@ -1,8 +1,14 @@
 {
-  "name": "my-t3-app",
+  "name": "supervisee",
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "name": "supervisee",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Supervisee by Praxiss: Professional supervision and compliance platform for clinicians.",
+  "author": "Praxiss",
   "scripts": {
     "build": "next build",
     "db:generate": "drizzle-kit generate",
